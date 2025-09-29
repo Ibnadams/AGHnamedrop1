@@ -37,6 +37,11 @@
             align-items: center;
             margin-bottom: 20px;
         }
+        
+        /* Main title size */
+        #header h1 {
+            font-size: 1.8em;
+        }
 
         #stats p {
             margin: 5px 0;
@@ -114,6 +119,47 @@
             z-index: 1;
             transition: transform linear; /* Duration set in JavaScript */
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+        }
+
+        /* --- MOBILE OPTIMIZATION (Zoom it inside) --- */
+        @media (max-width: 450px) {
+            #game-container {
+                padding: 15px 10px; /* Reduce side padding slightly */
+                width: 95%; /* Increase width usage */
+            }
+
+            #header {
+                flex-direction: column; /* Stack title and stats vertically */
+                align-items: flex-start;
+                margin-bottom: 15px;
+            }
+            
+            #header h1 {
+                font-size: 1.6em; /* Slightly smaller title */
+                margin-bottom: 10px;
+            }
+
+            #stats {
+                width: 100%;
+                display: flex;
+                justify-content: space-between; /* Space out Time and Score */
+            }
+            
+            #stats p {
+                font-size: 1.1em; /* Zoom font size down a tiny bit for fitting */
+            }
+
+            #name-input, #start-button {
+                font-size: 1.1em; /* Ensure input and button text is easily readable */
+            }
+
+            #game-area {
+                height: 350px; /* Reduce game area height slightly to fit everything */
+            }
+            
+            #watermark {
+                font-size: 2em; /* Shrink watermark slightly for small screens */
+            }
         }
     </style>
 </head>
@@ -216,7 +262,9 @@
             nameElement.textContent = nameText;
             
             const gameAreaWidth = gameArea.clientWidth;
-            const startX = Math.random() * (gameAreaWidth - 150); 
+            // Ensure names appear within the game area without being cut off.
+            const safeMargin = 150; 
+            const startX = Math.random() * (gameAreaWidth - safeMargin); 
             nameElement.style.left = `${Math.max(10, startX)}px`;
 
             const nameId = Date.now();
@@ -226,12 +274,13 @@
 
             gameArea.appendChild(nameElement);
 
-            // MODIFIED SPEED: Drop duration is 6 to 9 seconds (up from 4.5 to 7s)
+            // Drop duration is 6 to 9 seconds (Slower pace)
             const dropDuration = 6 + Math.random() * 3; 
             nameElement.style.transitionDuration = `${dropDuration}s`;
             
             // Start the drop
             setTimeout(() => {
+                // Drop slightly past the bottom edge of the game area
                 nameElement.style.transform = `translateY(${gameArea.clientHeight + 40}px)`;
             }, 50); 
         }
