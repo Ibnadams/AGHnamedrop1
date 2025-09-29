@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plateau State Name Drop: 60-Second Challenge (Easier Mode)</title>
+    
+    <style>
+        /* --- CSS STYLES --- */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            /* Blue Background */
+            background-color: #2196F3; 
+            color: white;
+            padding: 10px;
+        }
+
+        #game-container {
+            width: 90%;
+            max-width: 600px;
+            background-color: rgba(0, 0, 0, 0.4); 
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.7);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        #stats p {
+            margin: 5px 0;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        #game-area {
+            width: 100%;
+            height: 400px; /* Game play area height */
+            border: 3px solid white;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 15px;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        #name-input {
+            width: calc(100% - 22px);
+            padding: 12px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+            text-transform: capitalize;
+        }
+
+        #start-button {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.2em;
+            background-color: #4CAF50; /* Green start button */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        #start-button:hover:not(:disabled) {
+            background-color: #45a049;
+        }
+        
+        #start-button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+
+        /* Watermark Styling */
+        #watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 2.5em; 
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.1); 
+            pointer-events: none; 
+            z-index: 0;
+            white-space: nowrap;
+        }
+
+        /* Falling Name Styling */
+        .falling-name {
+            position: absolute;
+            top: -30px; 
+            padding: 5px 10px;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #2196F3;
+            border-radius: 4px;
+            font-weight: bold;
+            white-space: nowrap;
+            z-index: 1;
+            transition: transform linear; /* Duration set in JavaScript */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div id="header">
+            <h1>Plateau State Name Drop 🔵</h1>
+            <div id="stats">
+                <p>⌛ Time: <span id="timer">60</span>s</p>
+                <p>Score: <span id="score">0</span></p>
+            </div>
+        </div>
+
+        <div id="game-area">
+            </div>
+
+        <input type="text" id="name-input" placeholder="Type the falling LGA name here..." autofocus>
+        
+        <button id="start-button">Start 60-Second Challenge!</button>
+
+        <div id="watermark">PLATEAU STATE AREWAGENEUIS HUB</div>
+    </div>
+    
+    <script>
+        /* --- JAVASCRIPT LOGIC --- */
+        const LGAS = [
+            "Barkin Ladi", "Bassa", "Bokkos", "Jos East", "Jos North", "Jos South", 
+            "Kanam", "Kanke", "Langtang North", "Langtang South", "Mangu", "Mikang", 
+            "Pankshin", "Qua'an Pan", "Riyom", "Shendam", "Wase" 
+        ];
+
+        const gameArea = document.getElementById('game-area');
+        const nameInput = document.getElementById('name-input');
+        const startButton = document.getElementById('start-button');
+        const timerDisplay = document.getElementById('timer');
+        const scoreDisplay = document.getElementById('score');
+
+        let score = 0;
+        let timeLeft = 60;
+        let gameInterval;
+        let nameDropInterval;
+        let isGameRunning = false;
+        let activeNames = [];
+
+        // --- Game Functions ---
+
+        function startGame() {
+            if (isGameRunning) return;
+
+            // Reset game
+            score = 0;
+            timeLeft = 60;
+            scoreDisplay.textContent = score;
+            timerDisplay.textContent = timeLeft;
+            gameArea.innerHTML = '';
+            activeNames = [];
+            nameInput.value = '';
+            nameInput.disabled = false;
+            startButton.disabled = true;
+            isGameRunning = true;
+            
+            nameInput.focus();
+
+            // Start the timer (runs every second)
+            gameInterval = setInterval(updateGame, 1000);
+            
+            // MODIFIED SPEED: New name drops every 2 seconds (up from 1.3s)
+            nameDropInterval = setInterval(dropNewName, 2000); 
+        }
+
+        function updateGame() {
+            timeLeft--;
+            timerDisplay.textContent = timeLeft;
+
+            checkMissedNames();
+
+            if (timeLeft <= 0) {
+                endGame();
+            }
+        }
+
+        function endGame() {
+            clearInterval(gameInterval);
+            clearInterval(nameDropInterval);
+            isGameRunning = false;
+            nameInput.disabled = true;
+            startButton.disabled = false;
+            
+            setTimeout(() => {
+                alert(`Time's up! Your final score is ${score}. Great job!`);
+            }, 100);
+        }
+
+        function dropNewName() {
+            if (!isGameRunning) return;
+
+            const nameText = LGAS[Math.floor(Math.random() * LGAS.length)];
+            const nameElement = document.createElement('div');
+            nameElement.classList.add('falling-name');
+            nameElement.textContent = nameText;
+            
+            const gameAreaWidth = gameArea.clientWidth;
+            const startX = Math.random() * (gameAreaWidth - 150); 
+            nameElement.style.left = `${Math.max(10, startX)}px`;
+
+            const nameId = Date.now();
+            nameElement.dataset.id = nameId;
+            nameElement.dataset.name = nameText;
+            activeNames.push({ id: nameId, element: nameElement, name: nameText, missed: false });
+
+            gameArea.appendChild(nameElement);
+
+            // MODIFIED SPEED: Drop duration is 6 to 9 seconds (up from 4.5 to 7s)
+            const dropDuration = 6 + Math.random() * 3; 
+            nameElement.style.transitionDuration = `${dropDuration}s`;
+            
+            // Start the drop
+            setTimeout(() => {
+                nameElement.style.transform = `translateY(${gameArea.clientHeight + 40}px)`;
+            }, 50); 
+        }
+
+        function checkMissedNames() {
+            activeNames = activeNames.filter(item => {
+                const element = item.element;
+                if (element.getBoundingClientRect().top > gameArea.getBoundingClientRect().bottom) {
+                    element.remove();
+                    return false;
+                }
+                return true;
+            });
+        }
+
+        function checkInput(event) {
+            if (!isGameRunning || event.key !== 'Enter') return;
+
+            const typedName = nameInput.value.trim().toLowerCase();
+            
+            if (typedName === '') return;
+
+            const matchedIndex = activeNames.findIndex(item => 
+                item.name.toLowerCase() === typedName
+            );
+
+            if (matchedIndex !== -1) {
+                // Successful Hit!
+                const matchedItem = activeNames[matchedIndex];
+                
+                score++;
+                scoreDisplay.textContent = score;
+
+                // Visual feedback
+                matchedItem.element.style.backgroundColor = '#FFD700'; 
+                matchedItem.element.style.color = 'black';
+
+                // Remove the name
+                setTimeout(() => {
+                    matchedItem.element.remove();
+                }, 100); 
+
+                activeNames.splice(matchedIndex, 1);
+                nameInput.value = ''; 
+            } else {
+                 // Flash input red for an incorrect guess
+                 nameInput.style.backgroundColor = 'rgba(255, 100, 100, 0.3)';
+                 setTimeout(() => {
+                    nameInput.style.backgroundColor = 'white';
+                 }, 150);
+            }
+        }
+
+        // --- Event Listeners and Initialization ---
+
+        startButton.addEventListener('click', startGame);
+        nameInput.addEventListener('keydown', checkInput);
+
+        // Initial setup
+        nameInput.disabled = true;
+    </script>
+</body>
+</html>
