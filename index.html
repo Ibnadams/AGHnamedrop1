@@ -3,27 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plateau State Name Drop: 60-Second Challenge (Easier Mode)</title>
+    <title>3-Letter Word Drop: 60-Second Challenge (Easier Mode)</title>
     
     <style>
-        /* --- CSS STYLES --- */
+        /* --- CSS STYLES - Using Variables for Clarity --- */
+        :root {
+            --primary-color: #2196F3; /* Blue */
+            --secondary-color: #4CAF50; /* Green */
+            --background-dark: rgba(0, 0, 0, 0.4);
+            --text-light: white;
+            --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --drop-duration: 9s; /* Max drop duration for transition property definition */
+        }
+        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: var(--font-family);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            /* Blue Background */
-            background-color: #2196F3; 
-            color: white;
+            background-color: var(--primary-color); 
+            color: var(--text-light);
             padding: 10px;
         }
 
         #game-container {
             width: 90%;
             max-width: 600px;
-            background-color: rgba(0, 0, 0, 0.4); 
+            background-color: var(--background-dark); 
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 25px rgba(0, 0, 0, 0.7);
@@ -38,7 +46,6 @@
             margin-bottom: 20px;
         }
         
-        /* Main title size */
         #header h1 {
             font-size: 1.8em;
         }
@@ -51,13 +58,25 @@
 
         #game-area {
             width: 100%;
-            height: 400px; /* Game play area height */
-            border: 3px solid white;
+            height: 400px;
+            border: 3px solid var(--text-light);
             border-radius: 8px;
             position: relative;
             overflow: hidden;
             margin-bottom: 15px;
             background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        /* A11Y improvement: Visually hidden label */
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
         }
 
         #name-input {
@@ -68,15 +87,16 @@
             border-radius: 5px;
             margin-bottom: 10px;
             box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
-            text-transform: capitalize;
+            /* Keep text-transform: capitalize for aesthetic, though 3-letter words are often typed lowercase */
+            text-transform: capitalize; 
         }
 
         #start-button {
             width: 100%;
             padding: 12px;
             font-size: 1.2em;
-            background-color: #4CAF50; /* Green start button */
-            color: white;
+            background-color: var(--secondary-color); 
+            color: var(--text-light);
             border: none;
             border-radius: 5px;
             cursor: pointer;
@@ -112,53 +132,54 @@
             top: -30px; 
             padding: 5px 10px;
             background-color: rgba(255, 255, 255, 0.95);
-            color: #2196F3;
+            color: var(--primary-color);
             border-radius: 4px;
             font-weight: bold;
             white-space: nowrap;
             z-index: 1;
-            transition: transform linear; /* Duration set in JavaScript */
+            /* Define all transitions in CSS, duration set by JS */
+            transition: transform linear var(--drop-duration); 
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
         }
 
-        /* --- MOBILE OPTIMIZATION (Zoom it inside) --- */
+        /* --- MOBILE OPTIMIZATION --- */
         @media (max-width: 450px) {
             #game-container {
-                padding: 15px 10px; /* Reduce side padding slightly */
-                width: 95%; /* Increase width usage */
+                padding: 15px 10px; 
+                width: 95%; 
             }
 
             #header {
-                flex-direction: column; /* Stack title and stats vertically */
+                flex-direction: column; 
                 align-items: flex-start;
                 margin-bottom: 15px;
             }
             
             #header h1 {
-                font-size: 1.6em; /* Slightly smaller title */
+                font-size: 1.6em; 
                 margin-bottom: 10px;
             }
 
             #stats {
                 width: 100%;
                 display: flex;
-                justify-content: space-between; /* Space out Time and Score */
+                justify-content: space-between; 
             }
             
             #stats p {
-                font-size: 1.1em; /* Zoom font size down a tiny bit for fitting */
+                font-size: 1.1em; 
             }
 
             #name-input, #start-button {
-                font-size: 1.1em; /* Ensure input and button text is easily readable */
+                font-size: 1.1em; 
             }
 
             #game-area {
-                height: 350px; /* Reduce game area height slightly to fit everything */
+                height: 350px; 
             }
             
             #watermark {
-                font-size: 2em; /* Shrink watermark slightly for small screens */
+                font-size: 2em; 
             }
         }
     </style>
@@ -166,7 +187,7 @@
 <body>
     <div id="game-container">
         <div id="header">
-            <h1>Plateau State Name Drop 🔵</h1>
+            <h1>3-Letter Word Drop 📚</h1>
             <div id="stats">
                 <p>⌛ Time: <span id="timer">60</span>s</p>
                 <p>Score: <span id="score">0</span></p>
@@ -174,9 +195,10 @@
         </div>
 
         <div id="game-area">
-            </div>
-
-        <input type="text" id="name-input" placeholder="Type the falling LGA name here..." autofocus>
+        </div>
+        
+        <label for="name-input" class="visually-hidden">Type the falling 3-letter word</label>
+        <input type="text" id="name-input" placeholder="Type the falling 3-letter word here..." autofocus maxlength="3">
         
         <button id="start-button">Start 60-Second Challenge!</button>
 
@@ -185,10 +207,16 @@
     
     <script>
         /* --- JAVASCRIPT LOGIC --- */
-        const LGAS = [
-            "Barkin Ladi", "Bassa", "Bokkos", "Jos East", "Jos North", "Jos South", 
-            "Kanam", "Kanke", "Langtang North", "Langtang South", "Mangu", "Mikang", 
-            "Pankshin", "Qua'an Pan", "Riyom", "Shendam", "Wase" 
+        const THREE_LETTER_WORDS = [
+            "Act", "Age", "Air", "All", "And", "Any", "Ape", "Art", "Ask", "Awe", "Bag", 
+            "Ban", "Bed", "Big", "Box", "But", "Can", "Cap", "Car", "Cat", "Day", "Dog", 
+            "Dry", "Ear", "Eat", "End", "Eye", "Far", "Few", "Fit", "Fly", "For", "Fun", 
+            "Get", "Got", "Had", "Has", "Her", "Him", "His", "How", "Ice", "Ill", "Ink", 
+            "Job", "Joy", "Kid", "Kit", "Lag", "Law", "Lay", "Let", "Lie", "Low", "Man", 
+            "Max", "May", "Met", "New", "Not", "Now", "Off", "Old", "One", "Out", "Own", 
+            "Pay", "Pen", "Pet", "Put", "Run", "Sad", "Say", "See", "She", "Six", "Son", 
+            "Sun", "Ten", "The", "Too", "Try", "Two", "Use", "Was", "Way", "Who", "Why", 
+            "Yes", "Yet", "You", "Zip", "Zoo"
         ];
 
         const gameArea = document.getElementById('game-area');
@@ -224,17 +252,15 @@
             nameInput.focus();
 
             // Start the timer (runs every second)
-            gameInterval = setInterval(updateGame, 1000);
+            gameInterval = setInterval(updateTimer, 1000); 
             
-            // MODIFIED SPEED: New name drops every 2 seconds (up from 1.3s)
+            // New name drops every 2 seconds
             nameDropInterval = setInterval(dropNewName, 2000); 
         }
 
-        function updateGame() {
+        function updateTimer() {
             timeLeft--;
             timerDisplay.textContent = timeLeft;
-
-            checkMissedNames();
 
             if (timeLeft <= 0) {
                 endGame();
@@ -248,29 +274,58 @@
             nameInput.disabled = true;
             startButton.disabled = false;
             
+            // Clean up any remaining names and their listeners
+            activeNames.forEach(item => {
+                item.element.removeEventListener('transitionend', handleMissedName);
+                item.element.remove();
+            });
+            activeNames = [];
+            
             setTimeout(() => {
                 alert(`Time's up! Your final score is ${score}. Great job!`);
             }, 100);
         }
 
+        // Optimized way to handle missed names using transitionend
+        function handleMissedName(event) {
+            // Check if the element has actually reached the bottom (transform completed)
+            if (event.propertyName === 'transform') {
+                const element = event.target;
+                const nameId = parseInt(element.dataset.id);
+                
+                // Remove from active names list
+                activeNames = activeNames.filter(item => item.id !== nameId);
+                
+                // Remove from DOM
+                element.removeEventListener('transitionend', handleMissedName);
+                element.remove();
+            }
+        }
+
+
         function dropNewName() {
             if (!isGameRunning) return;
 
-            const nameText = LGAS[Math.floor(Math.random() * LGAS.length)];
+            // Use the new THREE_LETTER_WORDS array
+            const nameText = THREE_LETTER_WORDS[Math.floor(Math.random() * THREE_LETTER_WORDS.length)];
             const nameElement = document.createElement('div');
             nameElement.classList.add('falling-name');
             nameElement.textContent = nameText;
             
             const gameAreaWidth = gameArea.clientWidth;
-            // Ensure names appear within the game area without being cut off.
-            const safeMargin = 150; 
-            const startX = Math.random() * (gameAreaWidth - safeMargin); 
+            // Safer margin calculation
+            const safeWidth = gameAreaWidth - nameElement.offsetWidth - 20; // 20px buffer
+            const startX = Math.random() * (safeWidth > 0 ? safeWidth : gameAreaWidth - 100);
             nameElement.style.left = `${Math.max(10, startX)}px`;
 
             const nameId = Date.now();
             nameElement.dataset.id = nameId;
             nameElement.dataset.name = nameText;
-            activeNames.push({ id: nameId, element: nameElement, name: nameText, missed: false });
+            
+            // Add listener to efficiently detect when the name falls off the screen
+            nameElement.addEventListener('transitionend', handleMissedName);
+            
+            activeNames.push({ id: nameId, element: nameElement, name: nameText });
 
             gameArea.appendChild(nameElement);
 
@@ -278,22 +333,11 @@
             const dropDuration = 6 + Math.random() * 3; 
             nameElement.style.transitionDuration = `${dropDuration}s`;
             
-            // Start the drop
+            // Start the drop after a brief moment to allow CSS to register the transition
             setTimeout(() => {
                 // Drop slightly past the bottom edge of the game area
                 nameElement.style.transform = `translateY(${gameArea.clientHeight + 40}px)`;
             }, 50); 
-        }
-
-        function checkMissedNames() {
-            activeNames = activeNames.filter(item => {
-                const element = item.element;
-                if (element.getBoundingClientRect().top > gameArea.getBoundingClientRect().bottom) {
-                    element.remove();
-                    return false;
-                }
-                return true;
-            });
         }
 
         function checkInput(event) {
@@ -317,8 +361,10 @@
                 // Visual feedback
                 matchedItem.element.style.backgroundColor = '#FFD700'; 
                 matchedItem.element.style.color = 'black';
-
-                // Remove the name
+                
+                // Remove the name instantly and remove the transitionend listener
+                matchedItem.element.removeEventListener('transitionend', handleMissedName);
+                
                 setTimeout(() => {
                     matchedItem.element.remove();
                 }, 100); 
